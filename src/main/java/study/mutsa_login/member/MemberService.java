@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import study.mutsa_login.exception.CustomException;
 import study.mutsa_login.member.dto.JoinMemberRequest;
 import study.mutsa_login.member.dto.LoginMemberRequest;
+import study.mutsa_login.member.MemberCustomException.*;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -27,8 +29,7 @@ public class MemberService {
                 .orElseThrow(EntityNotFoundException::new);
 
         if (!Objects.equals(loginEmail, member.getEmail()) || !Objects.equals(loginPassword, member.getPassword())) {
-            log.error("로그인 정보 일치하지 않음");
-            throw new IllegalArgumentException("로그인 정보 일치하지 않음");
+            throw new IncorrectPasswordException();
         }
         log.info("로그인 성공");
         return member;
@@ -48,20 +49,17 @@ public class MemberService {
     }
 
 
-
     private void checkDuplicateNickname(String nickname) {
         Optional<Member> optionalNickname = memberRepository.findByNickname(nickname);
         if (optionalNickname.isPresent()) {
-            log.error("중복 닉네임");
-            throw new IllegalArgumentException("중복 닉네임");
+            throw new DuplicatedNicknameException();
         }
     }
 
     private void checkDuplicateEmail(String email) {
         Optional<Member> optionalEmail = memberRepository.findByEmail(email);
         if (optionalEmail.isPresent()) {
-            log.error("중복 이메일");
-            throw new IllegalArgumentException("중복 이메일");
+            throw new DuplicatedEmailException();
         }
     }
 }
