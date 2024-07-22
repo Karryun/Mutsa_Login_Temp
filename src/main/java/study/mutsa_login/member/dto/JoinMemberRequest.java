@@ -5,17 +5,5 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 
-public record JoinMemberRequest(
-        @NotBlank
-        @Size(min = 2, max = 10)
-        String nickname,
-
-        @NotBlank
-        @Email
-        String email,
-
-        @NotBlank
-        @Size(min = 6)
-        String password
-) {
+public record JoinMemberRequest(String nickname, String email, String phonenumber, String password) {
 }
